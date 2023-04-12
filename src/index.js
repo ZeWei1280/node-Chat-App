@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import http from 'http';
 import { Server } from 'socket.io';
+import Filter from 'bad-words';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,18 +12,38 @@ const publicDirectoryPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
 const app = express();
 const server = http.createServer(app);
-// 使用 http.createServer() 方法創建了一個 HTTP 服務器對象，並將 Express 應用程序對象 app 作為回調函數傳遞給 createServer() 方法，
-// 從而將 Express 應用程序掛載到了這個 HTTP 服務器上。相比直接使用 app.listen() 方法創建 Express 應用程序並將其綁定到指定端口上，
-// 這種方式更加底層，需要手動處理更多的細節，但同時也更加靈活，可以自由地擴展和定制 HTTP 服務器的行為。
 const io = new Server(server);
-// 繼續把server當成參數傳給socket.io設定server
 
 app.use(express.static(publicDirectoryPath));
 
 
-io.on('connection', ()=>{
+// io代表server，管理所有與client的連線。
+io.on('connection', (socket)=>{
     console.log('New WebSocket connection');
+
+
+
+    socket.emit('message', 'Welcome');
+    socket.broadcast.emit('message', 'A new user has joined!')
+    socket.on('sendMessage', (message, callback)=>{
+        const filter = new Filter();
+        if(filter.isProfane(message)){
+            return callback('Profanity is not allowed!');
+        }
+
+        io.emit('message', message);
+        callback();
+    })
+    socket.on('disconnect', ()=>{
+        io.emit('message', 'A user has left'); // 用io，不用socket.broadcast，因為user已經離開了
+    })
+    socket.on('sendLocation', ({lat, long}, callback)=>{
+        io.emit('message', `https://google.com/maps?q=${lat},${long}`);
+        callback();
+    })
 })
+
+
 server.listen(port, ()=>{
     console.log('Server is up on port '+ port);
 })

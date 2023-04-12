@@ -4,7 +4,18 @@
 
     </head>
     <body>
-        <p>Chat App</p>  
+        <p>
+            Chat App
+        </p>
+
+        <form id="sendMessageForm">
+            <input  id="sendMessageInput" name="message" placeholder="leave your message">
+            <button>Send</button>
+        </form>  
+        
+        <button id="sendLocationButton">Send Location</button>
+
         <script src="/socket.io/socket.io.js"></script>
+        <script src="./js/chat.js"></script>
     </body>
-</html>>
+</html>
