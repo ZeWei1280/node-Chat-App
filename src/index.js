@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import http from 'http';
 import { Server } from 'socket.io';
 import Filter from 'bad-words';
+import { generateMessage, generateLocationMsg } from './utils/messages.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,22 +24,22 @@ io.on('connection', (socket)=>{
 
 
 
-    socket.emit('message', 'Welcome');
-    socket.broadcast.emit('message', 'A new user has joined!')
+    socket.emit('message', generateMessage('Welcome!'));
+    socket.broadcast.emit('message', generateMessage('A new user has joined!'))
     socket.on('sendMessage', (message, callback)=>{
         const filter = new Filter();
         if(filter.isProfane(message)){
             return callback('Profanity is not allowed!');
         }
 
-        io.emit('message', message);
+        io.emit('message', generateMessage(message));
         callback();
     })
     socket.on('disconnect', ()=>{
-        io.emit('message', 'A user has left'); // 用io，不用socket.broadcast，因為user已經離開了
+        io.emit('message', generateMessage('A user has left')); // 用io，不用socket.broadcast，因為user已經離開了
     })
     socket.on('sendLocation', ({lat, long}, callback)=>{
-        io.emit('message', `https://google.com/maps?q=${lat},${long}`);
+        io.emit('locationMessage', (generateLocationMsg`https://google.com/maps?q=${lat},${long}`));
         callback();
     })
 })
