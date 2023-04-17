@@ -2,11 +2,38 @@
 // io() 是一個用於建立 Socket.IO 客戶端實例的方法。它的主要作用是建立一個新的 Socket.IO 客戶端實例，並將其連接到指定的 Socket.IO 伺服器。
 const socket = io();
 
+
+const $messages = document.querySelector('#messages');
+const autoscroll = ()=>{
+    // New message element
+    const $newMessage = $messages.lastElementChild;
+
+    // Height of the new message
+    const newMessageStyles = getComputedStyle($newMessage);
+    const newMessageMargin = parseInt(newMessageStyles.marginBottom)
+    const newMessageHeight = $newMessage.offsetHeight + newMessageMargin;
+
+    // visible height
+    const visibleHeight = $messages.offsetHeight;
+
+    // Height of messages container
+    const containerHeight = $messages.scrollHeight;
+
+    // How far have I scrolled?
+    const scrollOffset = $messages.scrollTop + visibleHeight;
+
+    if(containerHeight - newMessageHeight <= scrollOffset){
+        $messages.scrollTop = $messages.scrollHeight;
+    }
+
+}
+//---------------
+
 // ---------------render message---------------
 // message_template.innerHTML 是用來獲取這個template的 HTML 內容
 const messageTemplate = message_template.innerHTML;
 socket.on('message', (data)=>{
-    console.log(data);
+    // console.log(data);
     /*
         使用 Mustache.js template引擎中的 Mustache.render() 方法來將從伺服器接收到的資料插入到 HTML 模板中，
         並生成對應的 HTML 內容。生成的 HTML 內容被存儲在 html 變量中。
@@ -17,23 +44,29 @@ socket.on('message', (data)=>{
         這樣新的訊息就會顯示在訊息列表的底部。
     */
     const html = Mustache.render(messageTemplate, {
+        username: data.username,
         msg: data.text,
         createdAt: moment(data.createdAt).format('hh:mm a')
     }); 
     messages.insertAdjacentHTML('beforeend', html);
+    autoscroll();
 })
-
 
 
 const locationMsgTemplate = locationMsg_template.innerHTML;
 socket.on('locationMessage', (data)=>{
-    console.log(data);
+    // console.log(data);
     const html = Mustache.render(locationMsgTemplate, {
+        username: data.username,
         msg: data.url,
         createdAt: moment(data.createdAt).format('hh:mm a')
     }); 
     messages.insertAdjacentHTML('beforeend', html);
+    autoscroll();
 })
+//----------options-------------
+// location.search為client端的參數，在此會獲取我們的輸入
+const {username, room} = Qs.parse(location.search, {ignoreQueryPrefix: true})
 
 //------------------------------
 sendMessageForm.addEventListener('submit', (e)=>{
@@ -79,3 +112,20 @@ sendLocationButton.addEventListener('click', ()=>{
         })
     })
 })
+
+//---------------
+const sidebarTemplete = sidebar_templete.innerHTML;
+socket.on('roomData', ({room, users})=>{
+    const html = Mustache.render(sidebarTemplete, {
+        room,
+        users
+    })
+    sidebar.innerHTML = html;
+})
+
+socket.emit('join', {username, room}, (error)=>{
+    if(error){
+        alert(error)
+        location.href = '/'
+    }
+});
