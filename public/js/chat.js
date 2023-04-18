@@ -2,7 +2,6 @@
 // io() 是一個用於建立 Socket.IO 客戶端實例的方法。它的主要作用是建立一個新的 Socket.IO 客戶端實例，並將其連接到指定的 Socket.IO 伺服器。
 const socket = io();
 
-
 //---------------
 // const autoscroll = () => {
 //     // New message element
@@ -47,10 +46,13 @@ const autoscroll = ()=>{
     // How far have I scrolled?
     const scrollOffset = messages.scrollTop + visibleHeight;
 
-    if(containerHeight - newMessageHeight <= scrollOffset){
+    // if(containerHeight - newMessageHeight <= scrollOffset){
+    //     messages.scrollTop = messages.scrollHeight;
+    // }
+
+    if(Math.round(containerHeight - newMessageHeight) <= Math.round(scrollOffset)){
         messages.scrollTop = messages.scrollHeight;
     }
-
 }
 // ---------------render message---------------
 // message_template.innerHTML 是用來獲取這個template的 HTML 內容
