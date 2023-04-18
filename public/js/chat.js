@@ -3,10 +3,35 @@
 const socket = io();
 
 
-const $messages = document.querySelector('#messages');
+//---------------
+// const autoscroll = () => {
+//     // New message element
+//     const $newMessages = $messages.lastElementChild;
+
+//     // Height of the last message
+//     const newMessageStyles = getComputedStyle($newMessages);
+//     const newMessageMargin = parseInt(newMessageStyles.marginBottom);
+//     const newMessageHeight = $newMessages.offsetHeight + newMessageMargin;
+
+//     // Visable Height
+//     const visibleHeight = $messages.offsetHeight;
+
+//     // Height of messages container
+//     const containerHeight = $messages.scrollHeight;
+
+//     // How far have I scrolled?
+//     const scrollOffset = $messages.scrollTop + visibleHeight;
+
+//     if(containerHeight - newMessageHeight <= scrollOffset) {
+//         $messages.scrollTop = $messages.scrollHeight;
+//     }
+// }
+
+// const messages = document.querySelector('#messages')
+// const messages = document.getElementById('messages'); //建議使用
 const autoscroll = ()=>{
     // New message element
-    const $newMessage = $messages.lastElementChild;
+    const $newMessage = messages.lastElementChild;
 
     // Height of the new message
     const newMessageStyles = getComputedStyle($newMessage);
@@ -14,21 +39,19 @@ const autoscroll = ()=>{
     const newMessageHeight = $newMessage.offsetHeight + newMessageMargin;
 
     // visible height
-    const visibleHeight = $messages.offsetHeight;
+    const visibleHeight = messages.offsetHeight;
 
     // Height of messages container
-    const containerHeight = $messages.scrollHeight;
+    const containerHeight = messages.scrollHeight;
 
     // How far have I scrolled?
-    const scrollOffset = $messages.scrollTop + visibleHeight;
+    const scrollOffset = messages.scrollTop + visibleHeight;
 
     if(containerHeight - newMessageHeight <= scrollOffset){
-        $messages.scrollTop = $messages.scrollHeight;
+        messages.scrollTop = messages.scrollHeight;
     }
 
 }
-//---------------
-
 // ---------------render message---------------
 // message_template.innerHTML 是用來獲取這個template的 HTML 內容
 const messageTemplate = message_template.innerHTML;
