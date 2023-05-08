@@ -21,10 +21,10 @@
                 <div class="compose">
                     <form id="sendMessageForm">
                         <input  id="sendMessageInput" name="message" placeholder="快來聊天吧" required autocomplete="off" autofocus>
-                        <button id="sendMessageButton">送出</button>
+                        <button id="sendMessageButton">傳送</button>
                     </form>  
                     
-                    <button id="sendLocationButton">傳送您所在的位置</button>
+                    <button id="sendLocationButton">分享您所在的位置</button>
                 </div>
             </div>
         </div>
@@ -52,8 +52,8 @@
         </script>
         
         <script id="sidebar_templete" type="text/html">
-            <h2 class="room-title">{{room}}</h2>
-            <h3 class="list-title">Users</h3>
+            <h2 class="room-title">{{room}}聊天室</h2>
+            <h3 class="list-title">--聊天室成員--</h3>
             <ul class="users">
                 {{#users}}
                     <li>{{username}}</li>

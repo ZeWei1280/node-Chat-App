@@ -32,8 +32,8 @@ io.on('connection', (socket)=>{
         
         // socket.join()將客戶端連接到指定的房間。 這個方法是在服務端調用的。
         socket.join(user.room);
-        socket.emit('message', generateMessage('Admin', 'Welcome!'));
-        socket.broadcast.to(user.room).emit('message', generateMessage('Admin', `${user.username} has joined!`))
+        socket.emit('message', generateMessage('系統訊息', '歡迎加入聊天室!'));
+        socket.broadcast.to(user.room).emit('message', generateMessage('系統訊息', `${user.username} 加入聊天室!`))
         io.to(user.room).emit('roomData', {
             room: user.room,
             users: getUsersInRoom(user.room)
@@ -66,7 +66,7 @@ io.on('connection', (socket)=>{
         const user = removeUser(socket.id);
 
         if (user){
-            io.to(user.room).emit('message', generateMessage('Admin', `${user.username} has left!`)); // 用io，不用socket.broadcast，因為user已經離開了
+            io.to(user.room).emit('message', generateMessage('系統訊息', `${user.username} 已離開聊天室!`)); // 用io，不用socket.broadcast，因為user已經離開了
             io.to(user.room).emit('roomData', {
                 room: user.room,
                 users: getUsersInRoom(user.room)
