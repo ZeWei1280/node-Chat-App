@@ -54,6 +54,7 @@ const autoscroll = ()=>{
         messages.scrollTop = messages.scrollHeight;
     }
 }
+
 // ---------------render message---------------
 // message_template.innerHTML 是用來獲取這個template的 HTML 內容
 const messageTemplate = message_template.innerHTML;
